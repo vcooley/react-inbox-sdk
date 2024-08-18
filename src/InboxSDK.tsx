@@ -1,9 +1,17 @@
 import { load, type InboxSDK as InboxSDKType } from "@inboxsdk/core";
-import { createContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 let sdk: InboxSDKType;
 
 const InboxSDKContext = createContext<any>(null);
+
+export const useInboxSDK = () => useContext(InboxSDKContext);
 
 export default function InboxSDK({
   appId,
