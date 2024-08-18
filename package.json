@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@inboxsdk/core": "^2.1.64"
+    "@inboxsdk/core": "^2.1.64",
+    "@types/react": "^18.3.3"
   },
   "devDependencies": {
     "react": "^18.3.1"
