@@ -27,18 +27,20 @@ export default function ComposeView({ children }: { children: ReactNode }) {
 
   const [composeViews, setComposeViews] = useState<ComposeViewWrapper[]>([]);
 
-  useEffect(() => {
-    sdk.Compose.registerComposeViewHandler((composeView) => {
-      const id = sequenceId++;
-      setComposeViews((current) => [...current, { id, view: composeView }]);
+  useEffect(
+    () =>
+      sdk.Compose.registerComposeViewHandler((composeView) => {
+        const id = sequenceId++;
+        setComposeViews((current) => [...current, { id, view: composeView }]);
 
-      composeView.on("destroy", () =>
-        setComposeViews((current) =>
-          current.filter(({ view }) => view !== composeView),
-        ),
-      );
-    });
-  }, []);
+        composeView.on("destroy", () =>
+          setComposeViews((current) =>
+            current.filter(({ view }) => view !== composeView),
+          ),
+        );
+      }),
+    [],
+  );
 
   return composeViews.map(({ id, view }) => (
     <ComposeViewContext.Provider value={view} key={id}>
