@@ -9,7 +9,8 @@ import {
 
 let sdk: InboxSDKType;
 
-const InboxSDKContext = createContext<any>(null);
+// @ts-expect-error - We're not rendering children until the SDK is loaded
+const InboxSDKContext = createContext<InboxSDKType>(null);
 
 export const useInboxSDK = () => useContext(InboxSDKContext);
 
