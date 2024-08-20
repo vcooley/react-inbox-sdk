@@ -1,16 +1,7 @@
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { useInboxSDK } from "./InboxSDK";
+import { ReactNode, useEffect, useState } from "react";
 import { ComposeView as SDKComposeView } from "@inboxsdk/core";
-
-const ComposeViewContext = createContext<SDKComposeView | null>(null);
-
-export const useComposeView = () => useContext(ComposeViewContext);
+import { ComposeViewContext } from "./useComposeView";
+import { useInboxSDK } from "../InboxSDK";
 
 type ComposeViewWrapper = {
   id: number;
