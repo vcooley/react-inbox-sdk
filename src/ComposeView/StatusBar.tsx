@@ -15,9 +15,9 @@ const StatusBarContext = createContext<ComposeStatusBarContextValue>({
   statusBar: null,
 });
 
-export const useComposeStatusBar = () => useContext(StatusBarContext);
+export const useStatusBar = () => useContext(StatusBarContext);
 
-function ComposeStatusBar(props: ComposeStatusBarProps) {
+function StatusBar(props: ComposeStatusBarProps) {
   const composeView = useComposeView();
   const statusBarRef = useRef<StatusBarView | null>(null);
   const didInit = useRef<boolean>(false);
@@ -45,4 +45,4 @@ function ComposeStatusBar(props: ComposeStatusBarProps) {
   );
 }
 
-export default ComposeStatusBar;
+export default StatusBar;
