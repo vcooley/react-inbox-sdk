@@ -1,4 +1,4 @@
-import { Ref, createContext, useMemo, useRef } from "react";
+import { Ref, createContext, useContext, useMemo, useRef } from "react";
 import { ComposeButtonDescriptor } from "@inboxsdk/core";
 import ComposeButtonView from "@inboxsdk/core/src/platform-implementation-js/views/compose-button-view";
 
@@ -18,6 +18,8 @@ const ComposeButtonContext = createContext<ComposeButtonContextValue>({
   buttonRef: null,
   composeView: null,
 });
+
+export const useComposeButton = () => useContext(ComposeButtonContext);
 
 function createClassHash() {
   return "inbox-react-" + makeHash(8);
@@ -54,6 +56,11 @@ function ComposeButton(props: ComposeButtonProps) {
     if (!composeButtonNodeRef.current) {
       console.error("Couldn't find a compose button to attach to.");
     }
+
+    composeButtonRef.current.on("destroy", () => {
+      composeButtonRef.current = null;
+      composeButtonNodeRef.current = null;
+    });
   }
 
   const contextValue = useMemo(
