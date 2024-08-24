@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { ThreadView as SDKThreadView } from "@inboxsdk/core";
 import { ThreadViewContext } from "./useThreadView";
-import { useInboxSDK } from "../InboxSDK";
+import { useInboxSDK } from "../../InboxSDK";
 
 /**
  *  Provides a compose view context to its children. Its children will be rendered once per compose view that is being displayed.
