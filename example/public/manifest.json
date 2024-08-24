@@ -1,0 +1,24 @@
+{
+  "name": "Example React Gmail Extension",
+  "description": "Example extension showing use of the React wrapper for Streak Gmail SDK",
+  "version": "0.1",
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["contentEntry.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["scripting"],
+  "host_permissions": ["https://mail.google.com/"],
+  "manifest_version": 3,
+  "web_accessible_resources": [
+    {
+      "resources": ["index.js"],
+      "matches": ["https://mail.google.com/*"]
+    }
+  ]
+}
