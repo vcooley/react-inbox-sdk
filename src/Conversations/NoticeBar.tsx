@@ -19,6 +19,9 @@ function NoticeBar({ children }: { children: React.ReactNode }) {
     }
 
     noticeBarRef.current = threadView.addNoticeBar();
+    noticeBarRef.current.on("destroy", () => {
+      noticeBarRef.current = null;
+    });
   }
 
   return (
