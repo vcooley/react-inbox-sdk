@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { StatusBarView, StatusBarDescriptor } from "@inboxsdk/core";
 
@@ -20,14 +20,11 @@ export const useStatusBar = () => useContext(StatusBarContext);
 
 function StatusBar(props: ComposeStatusBarProps) {
   const { view: composeView } = useComposeView();
-  const statusBarRef = useRef<StatusBarView | null>(null);
-  const didInit = useRef<boolean>(false);
+  const [statusBar, setStatusBar] = useState<StatusBarView | null>(null);
 
   const { children, ...statusBarDescriptor } = props;
 
-  if (!didInit.current) {
-    didInit.current = true;
-
+  useEffect(() => {
     if (!composeView) {
       console.error("ComposeStatusBar must be wrapped in a ComposeView.");
       return;
@@ -35,13 +32,14 @@ function StatusBar(props: ComposeStatusBarProps) {
 
     const statusBar = composeView.addStatusBar(statusBarDescriptor);
     statusBar.on("destroy", () => {
-      statusBarRef.current = null;
+      setStatusBar(null);
     });
-  }
+    return () => statusBar.destroy();
+  }, []);
 
   return (
-    <StatusBarContext.Provider value={{ view: statusBarRef.current }}>
-      {statusBarRef.current && createPortal(children, statusBarRef.current.el)}
+    <StatusBarContext.Provider value={{ view: statusBar }}>
+      {statusBar && createPortal(children, statusBar.el)}
     </StatusBarContext.Provider>
   );
 }

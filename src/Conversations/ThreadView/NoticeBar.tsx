@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { SimpleElementView } from "@inboxsdk/core";
 
@@ -14,7 +14,7 @@ export const useNoticeBar = () => useContext(NoticeBarContext);
 
 function NoticeBar({ children }: { children: React.ReactNode }) {
   const { view: threadView } = useThreadView();
-  const noticeBarRef = useRef<SimpleElementView | null>(null);
+  const [noticeBar, setNoticeBar] = useState<SimpleElementView | null>(null);
 
   useEffect(() => {
     if (!threadView) {
@@ -22,17 +22,18 @@ function NoticeBar({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    noticeBarRef.current = threadView.addNoticeBar();
-    noticeBarRef.current.on("destroy", () => {
-      noticeBarRef.current = null;
+    const noticeBar = threadView.addNoticeBar();
+    setNoticeBar(noticeBar);
+    noticeBar.on("destroy", () => {
+      setNoticeBar(null);
     });
 
-    return () => noticeBarRef.current?.destroy();
+    return () => noticeBar.destroy();
   }, []);
 
   return (
-    <NoticeBarContext.Provider value={{ view: noticeBarRef.current }}>
-      {noticeBarRef.current && createPortal(children, noticeBarRef.current?.el)}
+    <NoticeBarContext.Provider value={{ view: noticeBar }}>
+      {noticeBar && createPortal(children, noticeBar.el)}
     </NoticeBarContext.Provider>
   );
 }

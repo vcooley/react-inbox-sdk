@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef } from "react";
+import { createContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { SimpleElementView } from "@inboxsdk/core";
 
@@ -12,7 +12,7 @@ const LabelContext = createContext<LabelContextValue>({ view: null });
 
 function Label({ children }: { children: React.ReactNode }) {
   const { view: threadView } = useThreadView();
-  const labelRef = useRef<SimpleElementView | null>(null);
+  const [label, setLabel] = useState<SimpleElementView | null>(null);
 
   useEffect(() => {
     if (!threadView) {
@@ -20,16 +20,21 @@ function Label({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    labelRef.current = threadView.addLabel();
-    labelRef.current.on("destroy", () => {
-      labelRef.current = null;
+    const label = threadView.addLabel();
+    setLabel(label);
+
+    label.on("destroy", () => {
+      setLabel(null);
     });
 
-    return () => labelRef.current?.destroy();
+    return () => {
+      label.destroy();
+    };
   }, []);
+
   return (
-    <LabelContext.Provider value={{ view: labelRef.current }}>
-      {labelRef.current && createPortal(children, labelRef.current?.el)}
+    <LabelContext.Provider value={{ view: label }}>
+      {label && createPortal(children, label.el)}
     </LabelContext.Provider>
   );
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ComposeNoticeView } from "@inboxsdk/core";
 
@@ -21,7 +21,9 @@ export const useComposeNotice = () => useContext(ComposeNoticeContext);
 
 function ComposeNotice(props: ComposeNoticeProps) {
   const { view: composeView } = useComposeView();
-  const composeNoticeRef = useRef<ComposeNoticeView | null>(null);
+  const [composeNotice, setComposeNotice] = useState<ComposeNoticeView | null>(
+    null,
+  );
 
   const { children, composeNoticeDescriptor } = props;
 
@@ -32,16 +34,16 @@ function ComposeNotice(props: ComposeNoticeProps) {
     }
 
     const composeNotice = composeView.addComposeNotice(composeNoticeDescriptor);
+    setComposeNotice(composeNotice);
     composeNotice.on("destroy", () => {
-      composeNoticeRef.current = null;
+      setComposeNotice(null);
     });
     return () => composeNotice.destroy();
   }, []);
 
   return (
-    <ComposeNoticeContext.Provider value={{ view: composeNoticeRef.current }}>
-      {composeNoticeRef.current &&
-        createPortal(children, composeNoticeRef.current?.el)}
+    <ComposeNoticeContext.Provider value={{ view: composeNotice }}>
+      {composeNotice && createPortal(children, composeNotice.el)}
     </ComposeNoticeContext.Provider>
   );
 }
