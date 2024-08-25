@@ -17,7 +17,7 @@
   "manifest_version": 3,
   "web_accessible_resources": [
     {
-      "resources": ["index.js"],
+      "resources": ["index.js", "pageWorld.js"],
       "matches": ["https://mail.google.com/*"]
     }
   ]
