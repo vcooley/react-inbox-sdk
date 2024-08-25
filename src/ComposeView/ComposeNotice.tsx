@@ -6,7 +6,7 @@ import { useComposeView } from "./useComposeView";
 
 type ComposeNoticeProps = {
   children: React.ReactNode;
-  composeNoticeDescriptor: { orderHint?: number };
+  composeNoticeDescriptor?: { orderHint?: number };
 };
 
 type ComposeNoticeContextValue = {
