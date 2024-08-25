@@ -1,18 +1,26 @@
 import { createContext, useRef } from "react";
+import { createPortal } from "react-dom";
 import { ContentPanelDescriptor, ContentPanelView } from "@inboxsdk/core";
 
 import { useThreadView } from "./useThreadView";
 
-const SidebarContentPanelContext = createContext<ContentPanelView | null>(null);
-type SidebarContentPanelProps = ContentPanelDescriptor & {
+type SidebarContentPanelContextValue = { view: ContentPanelView | null };
+
+const SidebarContentPanelContext =
+  createContext<SidebarContentPanelContextValue>({
+    view: null,
+  });
+
+type SidebarContentPanelProps = {
   children: React.ReactNode;
+  contentPanelDescriptor: ContentPanelDescriptor;
 };
 
 function SidebarContentPanel({
   children,
-  ...contentPanelDescriptor
+  contentPanelDescriptor,
 }: SidebarContentPanelProps) {
-  const threadView = useThreadView();
+  const { view: threadView } = useThreadView();
   const didInit = useRef<boolean>(false);
   const sidebarContentPanelRef = useRef<ContentPanelView | null>(null);
 
@@ -33,8 +41,11 @@ function SidebarContentPanel({
   }
 
   return (
-    <SidebarContentPanelContext.Provider value={sidebarContentPanelRef.current}>
-      {children}
+    <SidebarContentPanelContext.Provider
+      value={{ view: sidebarContentPanelRef.current }}
+    >
+      {sidebarContentPanelRef.current &&
+        createPortal(children, contentPanelDescriptor.el)}
     </SidebarContentPanelContext.Provider>
   );
 }

@@ -1,4 +1,5 @@
 import { createContext, useContext, useRef } from "react";
+import { createPortal } from "react-dom";
 import { StatusBarView, StatusBarDescriptor } from "@inboxsdk/core";
 
 import { useComposeView } from "./useComposeView";
@@ -8,17 +9,17 @@ type ComposeStatusBarProps = StatusBarDescriptor & {
 };
 
 type ComposeStatusBarContextValue = {
-  statusBar: StatusBarView | null;
+  view: StatusBarView | null;
 };
 
 const StatusBarContext = createContext<ComposeStatusBarContextValue>({
-  statusBar: null,
+  view: null,
 });
 
 export const useStatusBar = () => useContext(StatusBarContext);
 
 function StatusBar(props: ComposeStatusBarProps) {
-  const composeView = useComposeView();
+  const { view: composeView } = useComposeView();
   const statusBarRef = useRef<StatusBarView | null>(null);
   const didInit = useRef<boolean>(false);
 
@@ -39,8 +40,8 @@ function StatusBar(props: ComposeStatusBarProps) {
   }
 
   return (
-    <StatusBarContext.Provider value={{ statusBar: statusBarRef.current }}>
-      {children}
+    <StatusBarContext.Provider value={{ view: statusBarRef.current }}>
+      {statusBarRef.current && createPortal(children, statusBarRef.current.el)}
     </StatusBarContext.Provider>
   );
 }

@@ -1,29 +1,30 @@
 import { createContext, useContext, useRef } from "react";
+import { createPortal } from "react-dom";
 import { ComposeNoticeView } from "@inboxsdk/core";
 
 import { useComposeView } from "./useComposeView";
 
 type ComposeNoticeProps = {
   children: React.ReactNode;
-  orderHint?: number;
+  composeNoticeDescriptor: { orderHint?: number };
 };
 
 type ComposeNoticeContextValue = {
-  composeNotice: ComposeNoticeView | null;
+  view: ComposeNoticeView | null;
 };
 
 const ComposeNoticeContext = createContext<ComposeNoticeContextValue>({
-  composeNotice: null,
+  view: null,
 });
 
 export const useComposeNotice = () => useContext(ComposeNoticeContext);
 
 function ComposeNotice(props: ComposeNoticeProps) {
-  const composeView = useComposeView();
+  const { view: composeView } = useComposeView();
   const composeNoticeRef = useRef<ComposeNoticeView | null>(null);
   const didInit = useRef<boolean>(false);
 
-  const { children, ...composeNoticeDescriptor } = props;
+  const { children, composeNoticeDescriptor } = props;
 
   if (!didInit.current) {
     didInit.current = true;
@@ -40,10 +41,9 @@ function ComposeNotice(props: ComposeNoticeProps) {
   }
 
   return (
-    <ComposeNoticeContext.Provider
-      value={{ composeNotice: composeNoticeRef.current }}
-    >
-      {children}
+    <ComposeNoticeContext.Provider value={{ view: composeNoticeRef.current }}>
+      {composeNoticeRef.current &&
+        createPortal(children, composeNoticeRef.current?.el)}
     </ComposeNoticeContext.Provider>
   );
 }

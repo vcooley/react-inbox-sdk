@@ -1,22 +1,24 @@
 import { Ref, createContext, useContext, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import { ComposeButtonDescriptor } from "@inboxsdk/core";
 import ComposeButtonView from "@inboxsdk/core/src/platform-implementation-js/views/compose-button-view";
 
 import { useComposeView } from "./useComposeView";
 import { makeHash } from "../utils/makeHash";
 
-type ComposeButtonProps = ComposeButtonDescriptor & {
+type ComposeButtonProps = {
   children: React.ReactNode;
+  composeButtonDescriptor: ComposeButtonDescriptor;
 };
 
 type ComposeButtonContextValue = {
-  buttonRef: Ref<HTMLElement> | null;
-  composeView: ComposeButtonView | null;
+  elementRef: Ref<HTMLElement> | null;
+  view: ComposeButtonView | null;
 };
 
 const ComposeButtonContext = createContext<ComposeButtonContextValue>({
-  buttonRef: null,
-  composeView: null,
+  elementRef: null,
+  view: null,
 });
 
 export const useComposeButton = () => useContext(ComposeButtonContext);
@@ -26,12 +28,12 @@ function createClassHash() {
 }
 
 function ComposeButton(props: ComposeButtonProps) {
-  const composeView = useComposeView();
+  const { view: composeView } = useComposeView();
   const composeButtonRef = useRef<ComposeButtonView | null>(null);
   const composeButtonNodeRef = useRef<HTMLElement | null>(null);
   const didInit = useRef<boolean>(false);
 
-  const { children, ...composeButtonDescriptor } = props;
+  const { children, composeButtonDescriptor } = props;
 
   if (!didInit.current) {
     didInit.current = true;
@@ -63,17 +65,18 @@ function ComposeButton(props: ComposeButtonProps) {
     });
   }
 
-  const contextValue = useMemo(
+  const contextValue: ComposeButtonContextValue = useMemo(
     () => ({
-      buttonRef: composeButtonNodeRef,
-      composeView: composeButtonRef.current,
+      elementRef: composeButtonNodeRef,
+      view: composeButtonRef.current,
     }),
     [],
   );
 
   return (
     <ComposeButtonContext.Provider value={contextValue}>
-      {children}
+      {composeButtonNodeRef.current &&
+        createPortal(children, composeButtonNodeRef.current)}
     </ComposeButtonContext.Provider>
   );
 }

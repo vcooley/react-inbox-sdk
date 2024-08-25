@@ -21,7 +21,7 @@ export default function ThreadView({ children }: { children: ReactNode }) {
 
   return (
     threadView && (
-      <ThreadViewContext.Provider value={threadView}>
+      <ThreadViewContext.Provider value={{ view: threadView }}>
         {children}
       </ThreadViewContext.Provider>
     )

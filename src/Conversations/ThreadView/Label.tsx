@@ -1,12 +1,17 @@
 import { createContext, useRef } from "react";
+import { createPortal } from "react-dom";
 import { SimpleElementView } from "@inboxsdk/core";
 
 import { useThreadView } from "./useThreadView";
 
-const LabelContext = createContext<SimpleElementView | null>(null);
+type LabelContextValue = {
+  view: SimpleElementView | null;
+};
+
+const LabelContext = createContext<LabelContextValue>({ view: null });
 
 function Label({ children }: { children: React.ReactNode }) {
-  const threadView = useThreadView();
+  const { view: threadView } = useThreadView();
   const didInit = useRef<boolean>(false);
   const labelRef = useRef<SimpleElementView | null>(null);
 
@@ -25,8 +30,8 @@ function Label({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <LabelContext.Provider value={labelRef.current}>
-      {children}
+    <LabelContext.Provider value={{ view: labelRef.current }}>
+      {labelRef.current && createPortal(children, labelRef.current?.el)}
     </LabelContext.Provider>
   );
 }

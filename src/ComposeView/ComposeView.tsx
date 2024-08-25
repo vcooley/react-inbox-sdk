@@ -34,7 +34,7 @@ export default function ComposeView({ children }: { children: ReactNode }) {
   );
 
   return composeViews.map(({ id, view }) => (
-    <ComposeViewContext.Provider value={view} key={id}>
+    <ComposeViewContext.Provider value={{ view }} key={id}>
       {children}
     </ComposeViewContext.Provider>
   ));
