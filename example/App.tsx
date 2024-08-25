@@ -6,7 +6,6 @@ import ThreadView, {
 const INBOX_SDK_APP_ID = process.env.INBOX_SDK_APP_ID ?? "";
 
 function App() {
-  console.log("Rendered React App");
   return (
     <InboxSDK appId={INBOX_SDK_APP_ID}>
       <ThreadView>
