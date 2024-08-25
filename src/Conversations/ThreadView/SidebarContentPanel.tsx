@@ -1,4 +1,4 @@
-import { createContext, useRef } from "react";
+import { createContext, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { ContentPanelDescriptor, ContentPanelView } from "@inboxsdk/core";
 
@@ -16,17 +16,15 @@ type SidebarContentPanelProps = {
   contentPanelDescriptor: ContentPanelDescriptor;
 };
 
+// NOTE: Inconsistency here. The descriptor needs to provide `el` instead of the add method returning an `el` property.
 function SidebarContentPanel({
   children,
   contentPanelDescriptor,
 }: SidebarContentPanelProps) {
   const { view: threadView } = useThreadView();
-  const didInit = useRef<boolean>(false);
   const sidebarContentPanelRef = useRef<ContentPanelView | null>(null);
 
-  if (!didInit.current) {
-    didInit.current = true;
-
+  useEffect(() => {
     if (!threadView) {
       console.error("SidebarContentPanel must be wrapped in a ThreadView.");
       return;
@@ -38,7 +36,9 @@ function SidebarContentPanel({
     sidebarContentPanelRef.current.on("destroy", () => {
       sidebarContentPanelRef.current = null;
     });
-  }
+
+    // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
+  }, []);
 
   return (
     <SidebarContentPanelContext.Provider

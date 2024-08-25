@@ -1,4 +1,11 @@
-import { Ref, createContext, useContext, useMemo, useRef } from "react";
+import {
+  Ref,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { createPortal } from "react-dom";
 import { ComposeButtonDescriptor } from "@inboxsdk/core";
 import ComposeButtonView from "@inboxsdk/core/src/platform-implementation-js/views/compose-button-view";
@@ -31,13 +38,10 @@ function ComposeButton(props: ComposeButtonProps) {
   const { view: composeView } = useComposeView();
   const composeButtonRef = useRef<ComposeButtonView | null>(null);
   const composeButtonNodeRef = useRef<HTMLElement | null>(null);
-  const didInit = useRef<boolean>(false);
 
   const { children, composeButtonDescriptor } = props;
 
-  if (!didInit.current) {
-    didInit.current = true;
-
+  useEffect(() => {
     if (!composeView) {
       console.error("ComposeButton must be wrapped in a ComposeView.");
       return;
@@ -63,7 +67,8 @@ function ComposeButton(props: ComposeButtonProps) {
       composeButtonRef.current = null;
       composeButtonNodeRef.current = null;
     });
-  }
+    // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
+  }, []);
 
   const contextValue: ComposeButtonContextValue = useMemo(
     () => ({

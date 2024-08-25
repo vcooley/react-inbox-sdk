@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { SimpleElementView } from "@inboxsdk/core";
 
@@ -14,12 +14,9 @@ export const useNoticeBar = () => useContext(NoticeBarContext);
 
 function NoticeBar({ children }: { children: React.ReactNode }) {
   const { view: threadView } = useThreadView();
-  const didInit = useRef<boolean>(false);
   const noticeBarRef = useRef<SimpleElementView | null>(null);
 
-  if (!didInit.current) {
-    didInit.current = true;
-
+  useEffect(() => {
     if (!threadView) {
       console.error("NoticeBar must be wrapped in a ThreadView.");
       return;
@@ -29,7 +26,9 @@ function NoticeBar({ children }: { children: React.ReactNode }) {
     noticeBarRef.current.on("destroy", () => {
       noticeBarRef.current = null;
     });
-  }
+
+    return () => noticeBarRef.current?.destroy();
+  }, []);
 
   return (
     <NoticeBarContext.Provider value={{ view: noticeBarRef.current }}>

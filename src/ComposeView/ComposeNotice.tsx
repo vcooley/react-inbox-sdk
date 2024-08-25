@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { ComposeNoticeView } from "@inboxsdk/core";
 
@@ -22,13 +22,10 @@ export const useComposeNotice = () => useContext(ComposeNoticeContext);
 function ComposeNotice(props: ComposeNoticeProps) {
   const { view: composeView } = useComposeView();
   const composeNoticeRef = useRef<ComposeNoticeView | null>(null);
-  const didInit = useRef<boolean>(false);
 
   const { children, composeNoticeDescriptor } = props;
 
-  if (!didInit.current) {
-    didInit.current = true;
-
+  useEffect(() => {
     if (!composeView) {
       console.error("ComposeNotice must be wrapped in a ComposeView.");
       return;
@@ -38,7 +35,8 @@ function ComposeNotice(props: ComposeNoticeProps) {
     composeNotice.on("destroy", () => {
       composeNoticeRef.current = null;
     });
-  }
+    return () => composeNotice.destroy();
+  }, []);
 
   return (
     <ComposeNoticeContext.Provider value={{ view: composeNoticeRef.current }}>
