@@ -14,13 +14,8 @@ const INBOX_SDK_APP_ID = process.env.INBOX_SDK_APP_ID ?? "";
 function ThreadViewContent() {
   return (
     <ThreadView>
-      <SidebarContentPanel
-        contentPanelDescriptor={{
-          el: document.createElement("div"),
-          title: "I'm a thread view sidebar content panel!",
-        }}
-      >
-        {null}
+      <SidebarContentPanel>
+        <h3>I'm a thread view sidebar content panel!</h3>
       </SidebarContentPanel>
       <Label>
         <div style={{ backgroundColor: "red", color: "white" }}>
