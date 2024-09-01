@@ -1,5 +1,6 @@
 import InboxSDK from "react-inbox-sdk/InboxSDK";
-import ThreadView, {
+import {
+  ThreadView,
   Label,
   NoticeBar,
   SidebarContentPanel,
@@ -8,7 +9,8 @@ import {
   MessageView,
   AttachmentsToolbarButton,
 } from "react-inbox-sdk/Conversations/MessageView";
-import ComposeView, {
+import {
+  ComposeView,
   ComposeButton,
   ComposeNotice,
 } from "react-inbox-sdk/ComposeView";
@@ -41,7 +43,8 @@ function MessageViewContent() {
       <AttachmentsToolbarButton
         cardOptions={{
           section: "MORE",
-          title: "Attachment Toolbar Button",
+          title:
+            "https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365",
           iconUrl: "https://google.com/",
           onClick: () => alert("Hello from the attachment toolbar"),
           orderHint: 1,

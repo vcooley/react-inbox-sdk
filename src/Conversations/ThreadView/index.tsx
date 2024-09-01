@@ -1,4 +1,4 @@
-export { default } from "./ThreadView";
+export { default as ThreadView } from "./ThreadView";
 export { useThreadView } from "./useThreadView";
 export { default as Label } from "./Label";
 export { default as NoticeBar } from "./NoticeBar";
