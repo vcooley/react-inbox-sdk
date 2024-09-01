@@ -74,6 +74,8 @@ function ComposeButton(props: ComposeButtonProps) {
       composeButtonRef.current = null;
       setComposeButtonElement(null);
     });
+
+    // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
   }, []);
 
   const contextValue: ComposeButtonContextValue = useMemo(
