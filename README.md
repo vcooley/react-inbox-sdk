@@ -52,3 +52,4 @@ function ThreadOnlyComposeButton() {
 - InboxSDK supports modifying the underlying values passed to its view creation components using
 data streams. This is not currently supported by this adapter. You'll need to unmount and remount
 on of this library's components to update the underlying SDK's view.
+- Only Compose and Conversation views are provided at this time.
