@@ -54,7 +54,7 @@ function SidebarContentPanel({
 
     // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount
     // occurs. There is potentially a memory leak here as we can't tell the SDK to release the
-    // sidebar content panel.
+    // sidebar content panel. Is it safe to remove it from the DOM ourselves?
     () => {
       setContainerElement(null);
       sidebarContentPanelRef.current = null;

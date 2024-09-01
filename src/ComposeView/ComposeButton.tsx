@@ -1,10 +1,10 @@
 import {
-  Ref,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { ComposeButtonDescriptor } from "@inboxsdk/core";
@@ -19,12 +19,12 @@ type ComposeButtonProps = {
 };
 
 type ComposeButtonContextValue = {
-  elementRef: Ref<HTMLElement> | null;
+  buttonElement: HTMLDivElement | null;
   view: ComposeButtonView | null;
 };
 
 const ComposeButtonContext = createContext<ComposeButtonContextValue>({
-  elementRef: null,
+  buttonElement: null,
   view: null,
 });
 
@@ -37,7 +37,8 @@ function createClassHash() {
 function ComposeButton(props: ComposeButtonProps) {
   const { view: composeView } = useComposeView();
   const composeButtonRef = useRef<ComposeButtonView | null>(null);
-  const composeButtonNodeRef = useRef<HTMLElement | null>(null);
+  const [composeButtonElement, setComposeButtonElement] =
+    useState<HTMLDivElement | null>(null);
 
   const { children, composeButtonDescriptor } = props;
 
@@ -57,22 +58,27 @@ function ComposeButton(props: ComposeButtonProps) {
       ...composeButtonDescriptor,
       iconClass: className,
     });
-    composeButtonNodeRef.current = document.querySelector(`.${className}`);
+    // Yes, it's a div element.
+    const buttonElement = document.querySelector<HTMLDivElement>(
+      `.${className}`,
+    );
 
-    if (!composeButtonNodeRef.current) {
+    if (!buttonElement) {
       console.error("Couldn't find a compose button to attach to.");
+      return;
     }
+
+    setComposeButtonElement(buttonElement);
 
     composeButtonRef.current.on("destroy", () => {
       composeButtonRef.current = null;
-      composeButtonNodeRef.current = null;
+      setComposeButtonElement(null);
     });
-    // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
   }, []);
 
   const contextValue: ComposeButtonContextValue = useMemo(
     () => ({
-      elementRef: composeButtonNodeRef,
+      buttonElement: composeButtonElement,
       view: composeButtonRef.current,
     }),
     [],
@@ -80,8 +86,7 @@ function ComposeButton(props: ComposeButtonProps) {
 
   return (
     <ComposeButtonContext.Provider value={contextValue}>
-      {composeButtonNodeRef.current &&
-        createPortal(children, composeButtonNodeRef.current)}
+      {composeButtonElement && createPortal(children, composeButtonElement)}
     </ComposeButtonContext.Provider>
   );
 }
