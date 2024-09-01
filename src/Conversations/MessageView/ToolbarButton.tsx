@@ -18,7 +18,8 @@ function ToolbarButton({ toolbarButtonDescriptor }: ToolbarButtonProps) {
       console.error("ToolbarButton must be wrapped in a MessageView.");
       return;
     }
-    messageView.addToolbarButton(toolbarButtonDescriptor);
+    const toolbarButton = messageView.addToolbarButton(toolbarButtonDescriptor);
+    console.log(toolbarButton);
 
     // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
   }, []);

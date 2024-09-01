@@ -4,6 +4,10 @@ import ThreadView, {
   NoticeBar,
   SidebarContentPanel,
 } from "react-inbox-sdk/Conversations/ThreadView";
+import {
+  MessageView,
+  AttachmentsToolbarButton,
+} from "react-inbox-sdk/Conversations/MessageView";
 import ComposeView, {
   ComposeButton,
   ComposeNotice,
@@ -28,6 +32,22 @@ function ThreadViewContent() {
         </div>
       </NoticeBar>
     </ThreadView>
+  );
+}
+
+function MessageViewContent() {
+  return (
+    <MessageView>
+      <AttachmentsToolbarButton
+        cardOptions={{
+          section: "MORE",
+          title: "Attachment Toolbar Button",
+          iconUrl: "https://google.com/",
+          onClick: () => alert("Hello from the attachment toolbar"),
+          orderHint: 1,
+        }}
+      />
+    </MessageView>
   );
 }
 
@@ -57,6 +77,7 @@ function App() {
   return (
     <InboxSDK appId={INBOX_SDK_APP_ID}>
       <ThreadViewContent />
+      <MessageViewContent />
       <ComposeViewContent />
     </InboxSDK>
   );

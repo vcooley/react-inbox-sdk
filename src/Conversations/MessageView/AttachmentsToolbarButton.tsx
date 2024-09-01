@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { MessageViewToolbarButtonDescriptor } from "@inboxsdk/core";
 import { useMessageView } from "./useMessageView";
 
 export default function AttachmentsToolbarButton({
@@ -9,7 +10,7 @@ export default function AttachmentsToolbarButton({
    * see https://inboxsdk.github.io/inboxsdk-docs/conversations/#attachmentstoolbarbuttondescriptor
    */
   children?: React.ReactNode;
-  cardOptions: Record<string, any>;
+  cardOptions: MessageViewToolbarButtonDescriptor;
 }) {
   const { view: messageView } = useMessageView();
 
