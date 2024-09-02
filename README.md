@@ -1,10 +1,15 @@
 A React adapter for [InboxSDK](https://inboxsdk.github.io/inboxsdk-docs/). This allow you to run your React application directly in Gmail.
 
+**This project is in an experimental phase and only supports a subset of the InboxSDK API.**
+
 ## Usage
 See the project in `example/` for a fully working example, including configuration that you can use to get your own application started.
 
 ### Basic Example
 ```tsx
+import InboxSDK from "react-inbox-sdk/InboxSDK";
+import { ComposeView, ComposeButton } from "react-inbox-sdk/ComposeView";
+
 function App() {
   return (
     // You must provide an app id to InboxSDK in order to use the SDK.
@@ -38,6 +43,8 @@ in a new message compose view, but only if a thread is open.
 In order to accomplish the expected behavior, you can create an intermediate component that checks
 for the existence of a thread view and renders the button only if the thread view exists.
 ```tsx
+import { useThreadView } from "react-inbox-sdk/Conversations/ThreadView";
+
 function ThreadOnlyComposeButton() {
   const { view: threadView } = useThreadView();
   if (!threadView) return null;
