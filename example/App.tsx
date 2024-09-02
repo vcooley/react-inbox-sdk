@@ -14,6 +14,7 @@ import {
   ComposeButton,
   ComposeNotice,
 } from "react-inbox-sdk/ComposeView";
+import { useState } from "react";
 
 const INBOX_SDK_APP_ID = process.env.INBOX_SDK_APP_ID ?? "";
 
@@ -55,15 +56,18 @@ function MessageViewContent() {
 }
 
 function ComposeViewContent() {
+  const [clickCount, setClickCount] = useState(0);
+  const onClick = () => setClickCount((current) => current++);
   return (
     <ComposeView>
       <ComposeNotice>
         <div style={{ backgroundColor: "red", color: "white" }}>
-          I'm a compose notice!
+          I'm a compose notice! You've clicked the compose button {clickCount}{" "}
+          times.
         </div>
       </ComposeNotice>
       <ComposeButton
-        onClick={() => console.log("Clicked!")}
+        onClick={onClick}
         composeButtonDescriptor={{
           iconUrl:
             "https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365",
