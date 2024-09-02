@@ -30,19 +30,29 @@ type InboxSDKProps = {
    */
   appId?: string;
   /**
+   * Options passed to the SDK's load function.
+   */
+  loadOptions?: Parameters<typeof load>[2];
+  /**
    * Use this option if you already have an instance of the sdk loaded and want to use the same
-   * one for the React adapter. If this is provided, app id and options will have no effect
+   * one for the React adapter. If this is provided, `appId` and `loadOptions` will have no effect
    */
   instance?: InboxSDKType;
   children?: ReactNode;
 };
 
-export default function InboxSDK({ appId, instance, children }: InboxSDKProps) {
+export default function InboxSDK({
+  appId,
+  loadOptions,
+  instance,
+  children,
+}: InboxSDKProps) {
   const [, setRenderTrigger] = useState(0);
   useEffect(() => {
     if (sdk) return;
 
     if (!appId && !instance) {
+      // TODO: Only show this in dev mode
       console.warn(
         "The InboxSDK React adapter was rendered without an app ID or sdk instance and will not render any of its children until one is provided.",
       );
@@ -53,7 +63,7 @@ export default function InboxSDK({ appId, instance, children }: InboxSDKProps) {
       sdk = instance;
       setRenderTrigger((current) => current + 1);
     } else if (appId) {
-      load(2, appId).then((loaded) => {
+      load(2, appId, loadOptions).then((loaded) => {
         sdk = loaded;
         // Since we're keeping the SDK globally, we need to trigger a re-render manually
         setRenderTrigger((current) => current + 1);
