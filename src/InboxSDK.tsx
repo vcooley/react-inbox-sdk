@@ -9,7 +9,11 @@ import {
 
 let sdk: InboxSDKType;
 
-/** Get an instance of the SDK. */
+/**
+ * Get the instance of the SDK. The SDK loads asynchronously, so this can return undefined when it's
+ * not ready. You should only use this when you need access to the SDK outside of a React component
+ * or hook. Otherwise, prefer using `useInboxSDK` to access the SDK instance.
+ * */
 export function getSdk(): InboxSDKType | undefined {
   return sdk;
 }
@@ -19,18 +23,25 @@ const InboxSDKContext = createContext<InboxSDKType>(null);
 
 export const useInboxSDK = () => useContext(InboxSDKContext);
 
-export default function InboxSDK({
-  appId,
-  instance,
-  children,
-}: {
+type InboxSDKProps = {
+  /**
+   * The app id of your application. Either `appId` or `instance` is required. An app id can be
+   * created at https://www.inboxsdk.com/register
+   */
   appId?: string;
+  /**
+   * Use this option if you already have an instance of the sdk loaded and want to use the same
+   * one for the React adapter. If this is provided, app id and options will have no effect
+   */
   instance?: InboxSDKType;
   children?: ReactNode;
-}) {
+};
+
+export default function InboxSDK({ appId, instance, children }: InboxSDKProps) {
   const [, setRenderTrigger] = useState(0);
   useEffect(() => {
     if (sdk) return;
+
     if (!appId && !instance) {
       console.warn(
         "The InboxSDK React adapter was rendered without an app ID or sdk instance and will not render any of its children until one is provided.",
