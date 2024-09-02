@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -15,7 +16,8 @@ import { makeHash } from "../utils/makeHash";
 
 type ComposeButtonProps = {
   children: React.ReactNode;
-  composeButtonDescriptor: ComposeButtonDescriptor;
+  onClick: ComposeButtonDescriptor["onClick"] | undefined;
+  composeButtonDescriptor?: Omit<ComposeButtonDescriptor, "onClick">;
 };
 
 type ComposeButtonContextValue = {
@@ -35,6 +37,12 @@ function createClassHash() {
 }
 
 function ComposeButton(props: ComposeButtonProps) {
+  // We need to use a ref here because the click handler passed to the SDK does not receive any updates on subsequent renders
+  const handleClick = useRef(props.onClick);
+  useEffect(() => {
+    handleClick.current = (e) => props.onClick?.(e);
+  }, [props.onClick]);
+
   const { view: composeView } = useComposeView();
   const composeButtonRef = useRef<ComposeButtonView | null>(null);
   const [composeButtonElement, setComposeButtonElement] =
@@ -50,15 +58,16 @@ function ComposeButton(props: ComposeButtonProps) {
 
     // InboxSDK doesn't expose a handle to the HTML element backing the button, so we need to
     // create a unique class name and query the DOM for it
-    const { iconClass } = composeButtonDescriptor;
+    const { iconClass } = composeButtonDescriptor ?? {};
     const classHash = createClassHash();
     const className = iconClass ? classHash + " " + iconClass : classHash;
 
     composeButtonRef.current = composeView.addButton({
       ...composeButtonDescriptor,
+      onClick: (e) => handleClick.current?.(e),
       iconClass: className,
     });
-    // Yes, it's a div element.
+
     const buttonElement = document.querySelector<HTMLDivElement>(
       `.${className}`,
     );
@@ -68,6 +77,7 @@ function ComposeButton(props: ComposeButtonProps) {
       return;
     }
 
+    console.log(composeButtonRef.current);
     setComposeButtonElement(buttonElement);
 
     composeButtonRef.current.on("destroy", () => {

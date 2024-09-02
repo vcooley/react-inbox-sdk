@@ -63,8 +63,8 @@ function ComposeViewContent() {
         </div>
       </ComposeNotice>
       <ComposeButton
+        onClick={() => console.log("Clicked!")}
         composeButtonDescriptor={{
-          onClick: () => console.log("Clicked!"),
           iconUrl:
             "https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365",
           title: "I'm a compose button",

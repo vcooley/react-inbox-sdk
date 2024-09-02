@@ -51,19 +51,12 @@ export default function InboxSDK({
   useEffect(() => {
     if (sdk) return;
 
-    if (!appId && !instance) {
-      // TODO: Only show this in dev mode
-      console.warn(
-        "The InboxSDK React adapter was rendered without an app ID or sdk instance and will not render any of its children until one is provided.",
-      );
-      return;
-    }
-
     if (instance) {
       sdk = instance;
       setRenderTrigger((current) => current + 1);
-    } else if (appId) {
-      load(2, appId, loadOptions).then((loaded) => {
+    } else {
+      // We'll load the SDK even if we don't have an app id, which is useful for initial development of an app
+      load(2, appId ?? "", loadOptions).then((loaded) => {
         sdk = loaded;
         // Since we're keeping the SDK globally, we need to trigger a re-render manually
         setRenderTrigger((current) => current + 1);
