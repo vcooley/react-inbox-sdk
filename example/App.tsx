@@ -57,7 +57,10 @@ function MessageViewContent() {
 
 function ComposeViewContent() {
   const [clickCount, setClickCount] = useState(0);
-  const onClick = () => setClickCount((current) => current++);
+  const onClick = () => {
+    setClickCount((current) => current + 1);
+  };
+
   return (
     <ComposeView>
       <ComposeNotice>
