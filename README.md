@@ -15,6 +15,7 @@ import { ComposeView, ComposeButton } from "react-inbox-sdk/ComposeView";
 
 function App() {
   return (
+    {/* You'll want to include an app id to avoid a warning banner appearing, but you can leave it out for initial development */}
     <InboxSDK appId={process.env.INBOX_SDK_APP_ID}>
       {/* This view will render all of its children for each compose view visible on the page */}
       <ComposeView>
