@@ -1,6 +1,6 @@
 {
   "name": "@vcooley/react-inbox-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A React adapter for InboxSDK",
   "main": "index.js",
   "files": [
