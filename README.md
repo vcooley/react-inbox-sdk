@@ -26,8 +26,45 @@ function App() {
 }
 ```
 
+### Ejecting from the React Wrapper
+You can use the hooks exported from the library to "eject" from the React InboxSDK wrapper and use it natively.
+You can use this feature to use components from the InboxSDK library that aren't exposed by the React wrapper yet.
+```tsx
+import { useInboxSDK } from "react-inbox-sdk";
+import { ComposeView, useComposeView } from "react-inbox-sdk/ComposeView";
+
+function EjectingComposeButton() {
+  const { view: composeView } = useComposeView();
+  const inboxSDK = useInboxSDK();
+
+  useEffect(() => {
+    let butterBar;
+    if (composeView.isReply) {
+      butterBar = inboxSDK.ButterBar.showMessage("This is a reply");
+      butterBar.on("destroy", () => butterBar = null);
+    }
+    // Remember to clean up your mess!
+    () => {
+      butterBar?.destroy();
+    }
+  }, []);
+  
+  return null;
+}
+
+function App() {
+  return (
+    <InboxSDK appId={'123abc'}>
+      <ComposeView>
+        <EjectingComposeButton />
+      </ComposeView>
+    </InboxSDK>
+  );
+}
+```
+
 ## Supported Views
-The following views are currently supported in the library
+The following views are currently supported in the library:
 - [x] InboxSDK loader
 - [] Lists
 - [x] ComposeView
