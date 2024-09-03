@@ -37,11 +37,12 @@ function createClassHash() {
 }
 
 function ComposeButton(props: ComposeButtonProps) {
-  // We need to use a ref here because the click handler passed to the SDK does not receive any updates on subsequent renders
+  // We need to use a ref here because the click handler passed to the SDK does not receive any updates
+  // on subsequent renders and referencing the props directly would cause it to have a stale reference.
   const handleClick = useRef(props.onClick);
-  useEffect(() => {
-    handleClick.current = (e) => props.onClick?.(e);
-  }, [props.onClick]);
+  if (props.onClick !== handleClick.current) {
+    handleClick.current = props.onClick;
+  }
 
   const { view: composeView } = useComposeView();
   const composeButtonRef = useRef<ComposeButtonView | null>(null);
@@ -86,6 +87,7 @@ function ComposeButton(props: ComposeButtonProps) {
     });
 
     // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
+    () => console.log("cleanup");
   }, []);
 
   const contextValue: ComposeButtonContextValue = useMemo(
