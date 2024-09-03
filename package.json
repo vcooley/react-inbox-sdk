@@ -11,7 +11,13 @@
     "prepublishOnly": "tsc",
     "build:example": "tsc && cd example && pnpm build"
   },
-  "keywords": [],
+  "keywords": [
+    "inboxsdk",
+    "gmail",
+    "extension",
+    "chrome",
+    "safari"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
