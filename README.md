@@ -140,20 +140,20 @@ and then call such as `attachFiles` that are on the exposed compose view object.
 ## Supported Views
 The following views are currently supported in the library:
 - [x] InboxSDK loader
-- [] Lists
+- [ ] Lists
 - [x] ComposeView
 - [x] Conversations
-- [] Toolbars
-- [] Router
-- [] AppMenu
-- [] NavMenu
-- [] Widgets
-- [] ButterBar
-- [] Search
-- [] User
-- [] Global
-- [] Keyboard Shortcuts
-- [] Common Data Types
+- [ ] Toolbars
+- [ ] Router
+- [ ] AppMenu
+- [ ] NavMenu
+- [ ] Widgets
+- [ ] ButterBar
+- [ ] Search
+- [ ] User
+- [ ] Global
+- [ ] Keyboard Shortcuts
+- [ ] Common Data Types
 
 ## Caveats
 
