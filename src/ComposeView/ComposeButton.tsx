@@ -1,6 +1,5 @@
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -78,7 +77,6 @@ function ComposeButton(props: ComposeButtonProps) {
       return;
     }
 
-    console.log(composeButtonRef.current);
     setComposeButtonElement(buttonElement);
 
     composeButtonRef.current.on("destroy", () => {
@@ -87,7 +85,6 @@ function ComposeButton(props: ComposeButtonProps) {
     });
 
     // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
-    () => console.log("cleanup");
   }, []);
 
   const contextValue: ComposeButtonContextValue = useMemo(
