@@ -1,3 +1,5 @@
+# React InboxSDK
+
 A React adapter for [InboxSDK](https://inboxsdk.github.io/inboxsdk-docs/). This allow you to run your React application directly in Gmail.
 
 **This project is in an experimental phase and only supports a subset of the InboxSDK API. The API this library exposes is subject to change with any release.**
