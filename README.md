@@ -4,6 +4,7 @@ A React adapter for [InboxSDK](https://inboxsdk.github.io/inboxsdk-docs/). This 
 
 ## Usage
 See the project in `example/` for a fully working example, including configuration that you can use to get your own application started.
+You probably want to be familiar with the capabilities of the [InboxSDK library](https://inboxsdk.github.io/inboxsdk-docs/) before using this library.
 
 ### Basic Example
 ```tsx
@@ -138,17 +139,17 @@ and then call such as `attachFiles` that are on the exposed compose view object.
 
 
 ## Supported Views
-The following InboxSDK views are currently supported in the library, with the names of the exported values underneath:
+The following InboxSDK views are currently supported in the library, with the names of the related exported components and hooks underneath:
 - [x] InboxSDK
-- `InboxSDK`
+- `InboxSDK`, `useInboxSDK`
 - [ ] Lists
 - [x] Compose
-- `ComposeView`
+- `ComposeView`, `useComposeView`
   - `ComposeButton`
   - `ComposeNotice`
   - `StatusBar`
 - [x] Conversations
-- `ThreadView`
+- `ThreadView`, `useThreadView`
   - `Label`
   - `NoticeBar`
   - `SidebarContentPanel`
