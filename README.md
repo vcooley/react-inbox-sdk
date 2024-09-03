@@ -1,6 +1,6 @@
 A React adapter for [InboxSDK](https://inboxsdk.github.io/inboxsdk-docs/). This allow you to run your React application directly in Gmail.
 
-**This project is in an experimental phase and only supports a subset of the InboxSDK API.**
+**This project is in an experimental phase and only supports a subset of the InboxSDK API. The API this library exposes is subject to change with any release.**
 
 ## Usage
 See the project in `example/` for a fully working example, including configuration that you can use to get your own application started.
@@ -25,6 +25,24 @@ function App() {
   )
 }
 ```
+
+## Supported Views
+The following views are currently supported in the library
+- [x] InboxSDK loader
+- [] Lists
+- [x] ComposeView
+- [x] Conversations
+- [] Toolbars
+- [] Router
+- [] AppMenu
+- [] NavMenu
+- [] Widgets
+- [] ButterBar
+- [] Search
+- [] User
+- [] Global
+- [] Keyboard Shortcuts
+- [] Common Data Types
 
 ## Caveats
 
@@ -59,4 +77,3 @@ function ThreadOnlyComposeButton() {
 - InboxSDK supports modifying the underlying values passed to its view creation components using
 data streams. This is not currently supported by this adapter. You'll need to unmount and remount
 on of this library's components to update the underlying SDK's view.
-- Only Compose and Conversation views are provided at this time.
