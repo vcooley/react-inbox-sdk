@@ -63,6 +63,63 @@ function App() {
 }
 ```
 
+### Ejecting from the React Wrapper
+You can use the hooks exported from the library to "eject" from the React InboxSDK wrapper and use it natively.
+You can use this feature to use components from the InboxSDK library that aren't exposed by the React wrapper yet.
+```tsx
+import { useInboxSDK } from "react-inbox-sdk";
+import { ComposeView, useComposeView } from "react-inbox-sdk/ComposeView";
+
+function EjectingComposeButton() {
+  const { view: composeView } = useComposeView();
+  const inboxSDK = useInboxSDK();
+
+  useEffect(() => {
+    let butterBar;
+    if (composeView.isReply) {
+      butterBar = inboxSDK.ButterBar.showMessage("This is a reply");
+      butterBar.on("destroy", () => butterBar = null);
+    }
+    // Remember to clean up your mess!
+    () => {
+      butterBar?.destroy();
+    }
+  }, []);
+  
+  return null;
+}
+
+function App() {
+  return (
+    <InboxSDK appId={'123abc'}>
+      <ComposeView>
+        <EjectingComposeButton />
+      </ComposeView>
+    </InboxSDK>
+  );
+}
+```
+
+### Using Actions exposed by views
+
+
+
+## Library Structure
+This library implements components for the underlying library that attempt to follow the conventions set there,
+and are generally set under a root level view component that must wrap the UI components.
+
+
+For example, in [InboxSDK's Compose namespace](https://inboxsdk.github.io/inboxsdk-docs/compose/),
+the root level view component is called `ComposeView` (exported from `react-inbox-sdk/ComposeView`).
+There are several components that are added via methods starting with "add", `addComposeButton`, `addComposeNotice`, and `addStatusBar`.
+The corresponding components exported by this library are `ComposeButton`, `ComposeNotice`, and `StatusBar` respectively.
+
+In order to implement actions, such as adding an attachment in the compose view,
+you can use the hooks to call actions at the appropriate time.
+For example, `useComposeView` hook to access the underlying compose view,
+and then call such as `attachFiles` that are on the exposed compose view object.
+
+
 ## Supported Views
 The following views are currently supported in the library:
 - [x] InboxSDK loader
