@@ -58,7 +58,8 @@ function MessageViewContent() {
 function ComposeViewContent() {
   const [clickCount, setClickCount] = useState(0);
   const onClick = () => {
-    setClickCount((current) => current + 1);
+    // NOTE: We're intentionally not using the callback passed to onClick to illustrate that the button works without a callback state setter.
+    setClickCount(clickCount + 1);
   };
 
   return (
