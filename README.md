@@ -15,8 +15,7 @@ import { ComposeView, ComposeButton } from "react-inbox-sdk/ComposeView";
 
 function App() {
   return (
-    // You must provide an app id to InboxSDK in order to use the SDK.
-    <InboxSDK appId={'123abc'}>
+    <InboxSDK appId={process.env.INBOX_SDK_APP_ID}>
       {/* This view will render all of its children for each compose view visible on the page */}
       <ComposeView>
         {/* A button that will be rendered in every compose view */}
@@ -57,11 +56,9 @@ function EjectingComposeButton() {
 
 function App() {
   return (
-    <InboxSDK appId={'123abc'}>
-      <ComposeView>
-        <EjectingComposeButton />
-      </ComposeView>
-    </InboxSDK>
+    <ComposeView>
+      <EjectingComposeButton />
+    </ComposeView>
   );
 }
 ```
