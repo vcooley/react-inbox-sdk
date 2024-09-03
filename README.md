@@ -91,17 +91,34 @@ function EjectingComposeButton() {
 
 function App() {
   return (
-    <InboxSDK appId={'123abc'}>
-      <ComposeView>
-        <EjectingComposeButton />
-      </ComposeView>
-    </InboxSDK>
+    <ComposeView>
+      <EjectingComposeButton />
+    </ComposeView>
   );
 }
 ```
 
 ### Using Actions exposed by views
+```tsx
+function AttachFileComposeButton() {
+  const { view: composeView } = useComposeView();
+  const inboxSDK = useInboxSDK();
+  const attachFile = () => {
+    const file = new File(["hello world"], "hello.txt");
+    composeView.attachFiles([file]);
+  }
+  
+  return <ComposeButton onClick={attachFile} />;
+}
 
+function App() {
+  return (
+    <ComposeView>
+      <EjectingComposeButton />
+    </ComposeView>
+  );
+}
+```
 
 
 ## Library Structure
