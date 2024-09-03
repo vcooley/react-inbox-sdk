@@ -18,8 +18,9 @@
     "chrome",
     "safari"
   ],
-  "author": "",
+  "author": "Vince Cooley",
   "license": "ISC",
+  "repository": "github:vcooley/react-inbox-sdk",
   "dependencies": {
     "@inboxsdk/core": "^2.1.64",
     "@types/react": "^18.3.3",
