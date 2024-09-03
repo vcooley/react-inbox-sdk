@@ -1,10 +1,14 @@
 {
   "name": "@vcooley/react-inbox-sdk",
   "version": "0.0.1",
-  "description": "",
+  "description": "A React adapter for InboxSDK",
   "main": "index.js",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "tsc && npm publish",
     "build:example": "tsc && cd example && pnpm build"
   },
   "keywords": [],
