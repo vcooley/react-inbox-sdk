@@ -16,7 +16,7 @@ import { makeHash } from "../utils/makeHash";
 type ComposeButtonProps = {
   children: React.ReactNode;
   onClick: ComposeButtonDescriptor["onClick"] | undefined;
-  composeButtonDescriptor?: Omit<ComposeButtonDescriptor, "onClick">;
+  options?: Omit<ComposeButtonDescriptor, "onClick">;
 };
 
 type ComposeButtonContextValue = {
@@ -48,7 +48,7 @@ function ComposeButton(props: ComposeButtonProps) {
   const [composeButtonElement, setComposeButtonElement] =
     useState<HTMLDivElement | null>(null);
 
-  const { children, composeButtonDescriptor } = props;
+  const { children, options: composeButtonDescriptor } = props;
 
   useEffect(() => {
     if (!composeView) {

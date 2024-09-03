@@ -15,10 +15,10 @@ const AttachmentCardViewContext = createContext<AttachmentCardViewContextValue>(
 
 export default function AttachmentCard({
   children,
-  cardOptions,
+  options,
 }: {
   children: React.ReactNode;
-  cardOptions: Record<string, any>;
+  options: Record<string, any>;
 }) {
   const { view: messageView } = useMessageView();
   const [attachmentCard, setAttachmentCard] =
@@ -30,7 +30,7 @@ export default function AttachmentCard({
       return;
     }
 
-    const attachmentCard = messageView.addAttachmentCardView(cardOptions);
+    const attachmentCard = messageView.addAttachmentCardView(options);
     setAttachmentCard(attachmentCard);
     // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
   }, []);

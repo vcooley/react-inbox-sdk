@@ -6,7 +6,7 @@ import { useComposeView } from "./useComposeView";
 
 type ComposeNoticeProps = {
   children: React.ReactNode;
-  composeNoticeDescriptor?: { orderHint?: number };
+  options?: { orderHint?: number };
 };
 
 type ComposeNoticeContextValue = {
@@ -25,7 +25,7 @@ function ComposeNotice(props: ComposeNoticeProps) {
     null,
   );
 
-  const { children, composeNoticeDescriptor } = props;
+  const { children, options: composeNoticeDescriptor } = props;
 
   useEffect(() => {
     if (!composeView) {

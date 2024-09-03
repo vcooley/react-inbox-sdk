@@ -4,8 +4,9 @@ import { StatusBarView, StatusBarDescriptor } from "@inboxsdk/core";
 
 import { useComposeView } from "./useComposeView";
 
-type ComposeStatusBarProps = StatusBarDescriptor & {
+type ComposeStatusBarProps = {
   children: React.ReactNode;
+  options?: StatusBarDescriptor;
 };
 
 type ComposeStatusBarContextValue = {
@@ -18,11 +19,9 @@ const StatusBarContext = createContext<ComposeStatusBarContextValue>({
 
 export const useStatusBar = () => useContext(StatusBarContext);
 
-function StatusBar(props: ComposeStatusBarProps) {
+function StatusBar({ children, options }: ComposeStatusBarProps) {
   const { view: composeView } = useComposeView();
   const [statusBar, setStatusBar] = useState<StatusBarView | null>(null);
-
-  const { children, ...statusBarDescriptor } = props;
 
   useEffect(() => {
     if (!composeView) {
@@ -30,7 +29,7 @@ function StatusBar(props: ComposeStatusBarProps) {
       return;
     }
 
-    const statusBar = composeView.addStatusBar(statusBarDescriptor);
+    const statusBar = composeView.addStatusBar(options);
     statusBar.on("destroy", () => {
       setStatusBar(null);
     });

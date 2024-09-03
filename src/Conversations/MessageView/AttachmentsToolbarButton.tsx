@@ -3,14 +3,14 @@ import { MessageViewToolbarButtonDescriptor } from "@inboxsdk/core";
 import { useMessageView } from "./useMessageView";
 
 export default function AttachmentsToolbarButton({
-  cardOptions,
+  options,
 }: {
   /**
    * NOTE: children won't do anything for now. Use the cardOptions for customization.
    * see https://inboxsdk.github.io/inboxsdk-docs/conversations/#attachmentstoolbarbuttondescriptor
    */
   children?: React.ReactNode;
-  cardOptions: MessageViewToolbarButtonDescriptor;
+  options: MessageViewToolbarButtonDescriptor;
 }) {
   const { view: messageView } = useMessageView();
 
@@ -23,7 +23,7 @@ export default function AttachmentsToolbarButton({
     }
 
     // NOTE: Inconsistency here. This method returns nothing.
-    messageView.addAttachmentsToolbarButton(cardOptions);
+    messageView.addAttachmentsToolbarButton(options);
 
     // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
   }, []);

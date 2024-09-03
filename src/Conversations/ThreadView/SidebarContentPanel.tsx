@@ -17,7 +17,7 @@ const SidebarContentPanelContext =
 
 type SidebarContentPanelProps = {
   children: React.ReactNode;
-  contentPanelDescriptor?: Omit<ContentPanelDescriptor, "el"> & {
+  options?: Omit<ContentPanelDescriptor, "el"> & {
     /**
      * An element may be provided in the descriptor (which is required by the underlying SDK). If it's not provided, an empty div will be created instead.
      */
@@ -25,10 +25,7 @@ type SidebarContentPanelProps = {
   };
 };
 
-function SidebarContentPanel({
-  children,
-  contentPanelDescriptor,
-}: SidebarContentPanelProps) {
+function SidebarContentPanel({ children, options }: SidebarContentPanelProps) {
   const { view: threadView } = useThreadView();
   const sidebarContentPanelRef = useRef<ContentPanelView | null>(null);
   const [containerElement, setContainerElement] = useState<HTMLElement | null>(
@@ -41,11 +38,11 @@ function SidebarContentPanel({
       return;
     }
 
-    const { el = document.createElement("div") } = contentPanelDescriptor ?? {};
+    const { el = document.createElement("div") } = options ?? {};
     setContainerElement(el);
 
     sidebarContentPanelRef.current = threadView.addSidebarContentPanel({
-      ...contentPanelDescriptor,
+      ...options,
       el,
     });
     sidebarContentPanelRef.current.on("destroy", () => {

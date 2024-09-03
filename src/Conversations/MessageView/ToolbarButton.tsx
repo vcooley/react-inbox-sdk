@@ -7,10 +7,10 @@ type ToolbarButtonProps = {
    * NOTE: children won't do anything for now. Use the descriptor prop for customization.
    */
   children?: React.ReactNode;
-  toolbarButtonDescriptor: MessageViewToolbarButtonDescriptor;
+  options: MessageViewToolbarButtonDescriptor;
 };
 
-function ToolbarButton({ toolbarButtonDescriptor }: ToolbarButtonProps) {
+function ToolbarButton({ options }: ToolbarButtonProps) {
   const { view: messageView } = useMessageView();
 
   useEffect(() => {
@@ -18,7 +18,7 @@ function ToolbarButton({ toolbarButtonDescriptor }: ToolbarButtonProps) {
       console.error("ToolbarButton must be wrapped in a MessageView.");
       return;
     }
-    const toolbarButton = messageView.addToolbarButton(toolbarButtonDescriptor);
+    const toolbarButton = messageView.addToolbarButton(options);
     console.log(toolbarButton);
 
     // NOTE: Inconsistency here. The view does not have a destroy event to call when an unmount occurs.
