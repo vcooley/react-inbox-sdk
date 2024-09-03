@@ -1,5 +1,5 @@
 {
-  "name": "inbox-sdk-react",
+  "name": "@vcooley/react-inbox-sdk",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
