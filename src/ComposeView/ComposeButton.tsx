@@ -14,7 +14,7 @@ import { useComposeView } from "./useComposeView";
 import { makeHash } from "../utils/makeHash";
 
 type ComposeButtonProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onClick: ComposeButtonDescriptor["onClick"] | undefined;
   options?: Omit<ComposeButtonDescriptor, "onClick">;
 };
@@ -97,7 +97,9 @@ function ComposeButton(props: ComposeButtonProps) {
 
   return (
     <ComposeButtonContext.Provider value={contextValue}>
-      {composeButtonElement && createPortal(children, composeButtonElement)}
+      {composeButtonElement &&
+        children &&
+        createPortal(children, composeButtonElement)}
     </ComposeButtonContext.Provider>
   );
 }
