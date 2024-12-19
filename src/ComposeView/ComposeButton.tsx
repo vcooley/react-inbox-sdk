@@ -15,12 +15,9 @@ import type { Stream, Emitter } from "kefir";
 import { useComposeView } from "./useComposeView";
 import { makeHash } from "../utils/makeHash";
 
-type DescriptorWithoutClick = Omit<ComposeButtonDescriptor, "onClick">;
-
 type ComposeButtonProps = {
   children?: React.ReactNode;
-  onClick: ComposeButtonDescriptor["onClick"] | undefined;
-  options?: DescriptorWithoutClick;
+  options: ComposeButtonDescriptor;
 };
 
 type ComposeButtonContextValue = {
@@ -39,12 +36,34 @@ function createClassHash() {
   return "inbox-react-" + makeHash(8);
 }
 
-function ComposeButton(props: ComposeButtonProps) {
+function isPrimitive(value: unknown): boolean {
+  return (
+    value === null ||
+    ["string", "number", "boolean", "undefined"].includes(typeof value)
+  );
+}
+
+function areOptionsPrimitiveValuesEqual(a: object, b: object): boolean {
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+
+  if (aKeys.length !== bKeys.length) return false;
+
+  return aKeys.every((key) => {
+    const aValue = a[key as keyof typeof a];
+    const bValue = b[key as keyof typeof b];
+
+    if (!isPrimitive(aValue) || !isPrimitive(bValue)) return true;
+    return aValue === bValue;
+  });
+}
+
+function ComposeButton({ options, children }: ComposeButtonProps) {
   // We need to use a ref here because the click handler passed to the SDK does not receive any updates
   // on subsequent renders and referencing the props directly would cause it to have a stale reference.
-  const handleClick = useRef(props.onClick);
-  if (props.onClick !== handleClick.current) {
-    handleClick.current = props.onClick;
+  const handleClick = useRef(options.onClick);
+  if (options.onClick !== handleClick.current) {
+    handleClick.current = options.onClick;
   }
 
   const { view: composeView } = useComposeView();
@@ -52,19 +71,23 @@ function ComposeButton(props: ComposeButtonProps) {
   const [composeButtonElement, setComposeButtonElement] =
     useState<HTMLDivElement | null>(null);
 
-  const { children, options: composeButtonDescriptor } = props;
-
   // Create a stable stream that will live for the component's lifetime
-  const optionsStreamRef = useRef<Stream<DescriptorWithoutClick, never> | null>(
-    null
-  );
+  const optionsStreamRef = useRef<Stream<
+    ComposeButtonDescriptor,
+    never
+  > | null>(null);
   const emitOptionsRef = useRef<
-    ((value: DescriptorWithoutClick) => void) | null
+    ((value: ComposeButtonDescriptor) => void) | null
   >(null);
+
+  const optionsPrimitivesRef = useRef(options);
+  if (!areOptionsPrimitiveValuesEqual(options, optionsPrimitivesRef.current)) {
+    optionsPrimitivesRef.current = options;
+  }
 
   // Initialize the stream once
   if (!optionsStreamRef.current) {
-    optionsStreamRef.current = Kefir.stream<DescriptorWithoutClick, never>(
+    optionsStreamRef.current = Kefir.stream<ComposeButtonDescriptor, never>(
       (emitter) => {
         emitOptionsRef.current = (value) => emitter.emit(value);
         return () => {
@@ -77,9 +100,8 @@ function ComposeButton(props: ComposeButtonProps) {
 
   // Emit new options when they change
   useEffect(() => {
-    composeButtonDescriptor &&
-      emitOptionsRef.current?.(composeButtonDescriptor);
-  }, [composeButtonDescriptor]);
+    emitOptionsRef.current?.(optionsPrimitivesRef.current);
+  }, [optionsPrimitivesRef.current]);
 
   useEffect(() => {
     if (!composeView) {
@@ -111,9 +133,7 @@ function ComposeButton(props: ComposeButtonProps) {
     composeButtonRef.current = composeView.addButton(buttonStream);
     // For some reason, the button needs to be fully registered before it will listen to emitted
     // values. Emitting synchronously in the stream callback will not work correctly.
-    emitOptionsRef.current?.(
-      composeButtonDescriptor ?? ({} as DescriptorWithoutClick)
-    );
+    emitOptionsRef.current?.(optionsPrimitivesRef.current);
 
     const buttonElement = document.querySelector<HTMLDivElement>(
       `.${classHash}`
