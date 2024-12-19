@@ -74,7 +74,7 @@ function ComposeViewContent() {
         onClick={onClick}
         options={{
           iconUrl:
-            "https://lh5.googleusercontent.com/itq66nh65lfCick8cJ-OPuqZ8OUDTIxjCc25dkc4WUT1JG8XG3z6-eboCu63_uDXSqMnLRdlvQ=s128-h128-e365",
+            "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
           title: "I'm a compose button",
         }}
       />
