@@ -14,6 +14,7 @@ import type { Stream, Emitter } from "kefir";
 
 import { useComposeView } from "./useComposeView";
 import { makeHash } from "../utils/makeHash";
+import { arePrimitiveValuesEqual } from "../utils/primitiveUtils";
 
 type ComposeButtonProps = {
   children?: React.ReactNode;
@@ -34,28 +35,6 @@ export const useComposeButton = () => useContext(ComposeButtonContext);
 
 function createClassHash() {
   return "inbox-react-" + makeHash(8);
-}
-
-function isPrimitive(value: unknown): boolean {
-  return (
-    value === null ||
-    ["string", "number", "boolean", "undefined"].includes(typeof value)
-  );
-}
-
-function areOptionsPrimitiveValuesEqual(a: object, b: object): boolean {
-  const aKeys = Object.keys(a);
-  const bKeys = Object.keys(b);
-
-  if (aKeys.length !== bKeys.length) return false;
-
-  return aKeys.every((key) => {
-    const aValue = a[key as keyof typeof a];
-    const bValue = b[key as keyof typeof b];
-
-    if (!isPrimitive(aValue) || !isPrimitive(bValue)) return true;
-    return aValue === bValue;
-  });
 }
 
 function ComposeButton({ options, children }: ComposeButtonProps) {
@@ -81,7 +60,7 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
   >(null);
 
   const optionsPrimitivesRef = useRef(options);
-  if (!areOptionsPrimitiveValuesEqual(options, optionsPrimitivesRef.current)) {
+  if (!arePrimitiveValuesEqual(options, optionsPrimitivesRef.current)) {
     optionsPrimitivesRef.current = options;
   }
 
