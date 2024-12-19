@@ -22,7 +22,10 @@
   "license": "ISC",
   "repository": "github:vcooley/react-inbox-sdk",
   "dependencies": {
-    "@inboxsdk/core": "^2.1.64"
+    "@inboxsdk/core": "^2.1.64",
+    "@types/kefir": "^3.8.11",
+    "kefir": "^3.8.8",
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.5",

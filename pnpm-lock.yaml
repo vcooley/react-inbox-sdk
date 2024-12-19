@@ -8,6 +8,15 @@ dependencies:
   '@inboxsdk/core':
     specifier: ^2.1.64
     version: 2.1.64(kefir@3.8.8)
+  '@types/kefir':
+    specifier: ^3.8.11
+    version: 3.8.11
+  kefir:
+    specifier: ^3.8.8
+    version: 3.8.8
+  typescript:
+    specifier: ^5.7.2
+    version: 5.7.2
 
 devDependencies:
   '@types/react':
@@ -244,6 +253,12 @@ packages:
     resolution: {integrity: sha512-g/KzbYKbH5C2vPkaXGu8DJlHrGKHLsM25Zg9WuC9pMGfuvT+X25tZQWo5fK1BjBm8+UrVE9LDCvaY0CQk+fXDA==}
     optionalDependencies:
       rxjs: 7.8.1
+    dev: false
+
+  /typescript@5.7.2:
+    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
     dev: false
 
   /undici-types@6.19.6:
