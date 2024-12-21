@@ -37,28 +37,19 @@ function createClassHash() {
   return "inbox-react-" + makeHash(8);
 }
 
-function ComposeButton({ options, children }: ComposeButtonProps) {
-  // We need to use a ref here because the click handler passed to the SDK does not receive any updates
-  // on subsequent renders and referencing the props directly would cause it to have a stale reference.
-  const handleClick = useRef(options.onClick);
-  if (options.onClick !== handleClick.current) {
-    handleClick.current = options.onClick;
-  }
-
-  const { view: composeView } = useComposeView();
-  const composeButtonRef = useRef<ComposeButtonView | null>(null);
-  const [composeButtonElement, setComposeButtonElement] =
-    useState<HTMLDivElement | null>(null);
-
+/**
+ * Provides a stream given an options object. This stream will only emit new values when its primitive
+ * values change. Non-primitive values should be handled at a higher level.
+ *
+ * @see {ComposeButton} for an example with a non-primitive click handler.
+ *
+ */
+function usePrimitiveOptionsStream<T extends object>(options: T) {
   // Create a stable stream that will live for the component's lifetime
-  const optionsStreamRef = useRef<Stream<
-    ComposeButtonDescriptor,
-    never
-  > | null>(null);
-  const emitOptionsRef = useRef<
-    ((value: ComposeButtonDescriptor) => void) | null
-  >(null);
+  const optionsStreamRef = useRef<Stream<T, never> | null>(null);
+  const emitOptionsRef = useRef<((value: T) => void) | null>(null);
 
+  // Track primitive values in options
   const optionsPrimitivesRef = useRef(options);
   if (!arePrimitiveValuesEqual(options, optionsPrimitivesRef.current)) {
     optionsPrimitivesRef.current = options;
@@ -66,15 +57,13 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
 
   // Initialize the stream once
   if (!optionsStreamRef.current) {
-    optionsStreamRef.current = Kefir.stream<ComposeButtonDescriptor, never>(
-      (emitter) => {
-        emitOptionsRef.current = (value) => emitter.emit(value);
-        return () => {
-          emitOptionsRef.current = null;
-          optionsStreamRef.current = null;
-        };
-      }
-    );
+    optionsStreamRef.current = Kefir.stream<T, never>((emitter) => {
+      emitOptionsRef.current = (value) => emitter.emit(value);
+      return () => {
+        emitOptionsRef.current = null;
+        optionsStreamRef.current = null;
+      };
+    });
   }
 
   // Emit new options when they change
@@ -82,13 +71,35 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
     emitOptionsRef.current?.(optionsPrimitivesRef.current);
   }, [optionsPrimitivesRef.current]);
 
+  return {
+    streamRef: optionsStreamRef,
+    emitOptionsRef: emitOptionsRef,
+  };
+}
+
+function ComposeButton({ options, children }: ComposeButtonProps) {
+  // We need to use a ref here because the click handler passed to the SDK does not receive any updates
+  // on subsequent renders and referencing the props directly would cause it to have a stale reference.
+
+  const { view: composeView } = useComposeView();
+  const composeButtonRef = useRef<ComposeButtonView | null>(null);
+  const [composeButtonElement, setComposeButtonElement] =
+    useState<HTMLDivElement | null>(null);
+
+  const { streamRef, emitOptionsRef } = usePrimitiveOptionsStream(options);
+
+  const handleClickRef = useRef(options.onClick);
+  if (handleClickRef.current !== options.onClick) {
+    handleClickRef.current = options.onClick;
+  }
+
   useEffect(() => {
     if (!composeView) {
       console.error("ComposeButton must be wrapped in a ComposeView.");
       return;
     }
 
-    if (!optionsStreamRef.current) {
+    if (!streamRef.current) {
       console.error(
         "Missing options stream. Was this component cleaned up already?"
       );
@@ -100,10 +111,12 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
     const classHash = createClassHash();
 
     // Create a stream that combines the options with our stable className and click handler
-    const buttonStream = optionsStreamRef.current.map((options) => ({
+    const buttonStream = streamRef.current.map((options) => ({
       ...options,
       onClick: ((e) =>
-        handleClick.current?.(e)) satisfies ComposeButtonDescriptor["onClick"],
+        handleClickRef.current?.(
+          e
+        )) satisfies ComposeButtonDescriptor["onClick"],
       iconClass: options.iconClass
         ? `${classHash} ${options.iconClass}`
         : classHash,
@@ -112,7 +125,7 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
     composeButtonRef.current = composeView.addButton(buttonStream);
     // For some reason, the button needs to be fully registered before it will listen to emitted
     // values. Emitting synchronously in the stream callback will not work correctly.
-    emitOptionsRef.current?.(optionsPrimitivesRef.current);
+    emitOptionsRef.current?.(options);
 
     const buttonElement = document.querySelector<HTMLDivElement>(
       `.${classHash}`
