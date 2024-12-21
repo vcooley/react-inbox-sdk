@@ -9,12 +9,10 @@ import {
 import { createPortal } from "react-dom";
 import { ComposeButtonDescriptor } from "@inboxsdk/core";
 import ComposeButtonView from "@inboxsdk/core/src/platform-implementation-js/views/compose-button-view";
-import Kefir from "kefir";
-import type { Stream, Emitter } from "kefir";
 
 import { useComposeView } from "./useComposeView";
 import { makeHash } from "../utils/makeHash";
-import { arePrimitiveValuesEqual } from "../utils/primitiveUtils";
+import { usePrimitiveOptionsStream } from "../utils/usePrimitiveOptionsStream";
 
 type ComposeButtonProps = {
   children?: React.ReactNode;
@@ -37,56 +35,14 @@ function createClassHash() {
   return "inbox-react-" + makeHash(8);
 }
 
-/**
- * Provides a stream given an options object. This stream will only emit new values when its primitive
- * values change. Non-primitive values should be handled at a higher level.
- *
- * @see {ComposeButton} for an example with a non-primitive click handler.
- *
- */
-function usePrimitiveOptionsStream<T extends object>(options: T) {
-  // Create a stable stream that will live for the component's lifetime
-  const optionsStreamRef = useRef<Stream<T, never> | null>(null);
-  const emitOptionsRef = useRef<((value: T) => void) | null>(null);
-
-  // Track primitive values in options
-  const optionsPrimitivesRef = useRef(options);
-  if (!arePrimitiveValuesEqual(options, optionsPrimitivesRef.current)) {
-    optionsPrimitivesRef.current = options;
-  }
-
-  // Initialize the stream once
-  if (!optionsStreamRef.current) {
-    optionsStreamRef.current = Kefir.stream<T, never>((emitter) => {
-      emitOptionsRef.current = (value) => emitter.emit(value);
-      return () => {
-        emitOptionsRef.current = null;
-        optionsStreamRef.current = null;
-      };
-    });
-  }
-
-  // Emit new options when they change
-  useEffect(() => {
-    emitOptionsRef.current?.(optionsPrimitivesRef.current);
-  }, [optionsPrimitivesRef.current]);
-
-  return {
-    streamRef: optionsStreamRef,
-    emitOptionsRef: emitOptionsRef,
-  };
-}
-
 function ComposeButton({ options, children }: ComposeButtonProps) {
-  // We need to use a ref here because the click handler passed to the SDK does not receive any updates
-  // on subsequent renders and referencing the props directly would cause it to have a stale reference.
-
   const { view: composeView } = useComposeView();
   const composeButtonRef = useRef<ComposeButtonView | null>(null);
   const [composeButtonElement, setComposeButtonElement] =
     useState<HTMLDivElement | null>(null);
 
-  const { streamRef, emitOptionsRef } = usePrimitiveOptionsStream(options);
+  const { streamRef, emitOptionsRef } =
+    usePrimitiveOptionsStream<ComposeButtonDescriptor>(options);
 
   const handleClickRef = useRef(options.onClick);
   if (handleClickRef.current !== options.onClick) {
