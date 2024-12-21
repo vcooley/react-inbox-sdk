@@ -78,6 +78,13 @@ function ComposeViewContent() {
           title: "I'm a compose button",
         }}
       />
+      <ComposeButton
+        options={{
+          onClick,
+        }}
+      >
+        Hi!
+      </ComposeButton>
     </ComposeView>
   );
 }
