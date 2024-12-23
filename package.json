@@ -7,7 +7,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "prepublishOnly": "tsc",
     "build:example": "tsc && cd example && pnpm build"
   },
@@ -23,16 +23,19 @@
   "repository": "github:vcooley/react-inbox-sdk",
   "dependencies": {
     "@inboxsdk/core": "^2.1.64",
-    "@types/kefir": "^3.8.11",
-    "kefir": "^3.8.8",
-    "typescript": "^5.7.2"
+    "kefir": "^3.8.8"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.1.0",
+    "@types/kefir": "^3.8.11",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "jsdom": "^25.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
     "vitest": "^2.1.8"
   },
   "peerDependencies": {
