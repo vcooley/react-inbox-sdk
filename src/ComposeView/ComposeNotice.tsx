@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ComposeNoticeView } from "@inboxsdk/core";
 
 import { useComposeView } from "./useComposeView";
+import { usePrimitiveOptionsStream } from "../utils/usePrimitiveOptionsStream";
 
 type ComposeNoticeProps = {
   children: React.ReactNode;
@@ -22,10 +23,11 @@ export const useComposeNotice = () => useContext(ComposeNoticeContext);
 function ComposeNotice(props: ComposeNoticeProps) {
   const { view: composeView } = useComposeView();
   const [composeNotice, setComposeNotice] = useState<ComposeNoticeView | null>(
-    null,
+    null
   );
+  const { children, options = {} } = props;
 
-  const { children, options: composeNoticeDescriptor } = props;
+  const { streamRef, emitterRef } = usePrimitiveOptionsStream(options);
 
   useEffect(() => {
     if (!composeView) {
@@ -33,13 +35,27 @@ function ComposeNotice(props: ComposeNoticeProps) {
       return;
     }
 
-    const composeNotice = composeView.addComposeNotice(composeNoticeDescriptor);
-    setComposeNotice(composeNotice);
-    composeNotice.on("destroy", () => {
+    if (!streamRef.current) {
+      console.error(
+        "Missing options stream. Was this component cleaned up already?"
+      );
+      return;
+    }
+
+    const notice = composeView.addComposeNotice(streamRef.current as any);
+    setComposeNotice(notice);
+    // emitterRef.current?.emit(options);
+
+    notice.on("destroy", () => {
+      emitterRef.current?.end();
       setComposeNotice(null);
     });
-    return () => composeNotice.destroy();
-  }, []);
+
+    return () => {
+      notice.destroy();
+      emitterRef.current?.end();
+    };
+  }, [composeView]);
 
   return (
     <ComposeNoticeContext.Provider value={{ view: composeNotice }}>

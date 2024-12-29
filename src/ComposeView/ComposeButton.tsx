@@ -79,9 +79,6 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
     }));
 
     composeButtonRef.current = composeView.addButton(buttonStream);
-    // For some reason, the button needs to be fully registered before it will listen to emitted
-    // values. Emitting synchronously in the stream callback will not work correctly.
-    emitterRef.current?.emit(options);
 
     const buttonElement = document.querySelector<HTMLDivElement>(
       `.${classHash}`

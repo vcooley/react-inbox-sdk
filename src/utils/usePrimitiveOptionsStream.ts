@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import Kefir from "kefir";
 import type { Emitter, Stream } from "kefir";
-import { arePrimitiveValuesEqual } from "./primitiveUtils";
+import { arePrimitiveValuesEqual, isPrimitive } from "./primitives";
 
 /**
  * A hook that creates a Kefir stream for managing options with primitive value comparison.
