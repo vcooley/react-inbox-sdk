@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ComposeNoticeView } from "@inboxsdk/core";
 
 import { useComposeView } from "./useComposeView";
 import { usePrimitiveOptionsStream } from "../utils/usePrimitiveOptionsStream";
+import { ComposeNoticeView } from "@inboxsdk/core";
 
 type ComposeNoticeProps = {
   children: React.ReactNode;
-  options?: { orderHint?: number };
+  options?: { orderHint?: number; height?: number };
 };
 
 type ComposeNoticeContextValue = {
@@ -42,9 +42,8 @@ function ComposeNotice(props: ComposeNoticeProps) {
       return;
     }
 
-    const notice = composeView.addComposeNotice(streamRef.current as any);
+    const notice = composeView.addComposeNotice(streamRef.current);
     setComposeNotice(notice);
-    // emitterRef.current?.emit(options);
 
     notice.on("destroy", () => {
       emitterRef.current?.end();

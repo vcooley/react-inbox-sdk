@@ -64,7 +64,7 @@ function ComposeViewContent() {
 
   return (
     <ComposeView>
-      <ComposeNotice>
+      <ComposeNotice options={{ height: 200 }}>
         <div style={{ backgroundColor: "red", color: "white" }}>
           I'm a compose notice! You've clicked the compose button {clickCount}{" "}
           times.
