@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import Kefir from "kefir";
-import type { Stream } from "kefir";
+import type { Emitter, Stream } from "kefir";
 import { arePrimitiveValuesEqual } from "./primitiveUtils";
 
 /**
@@ -8,34 +8,48 @@ import { arePrimitiveValuesEqual } from "./primitiveUtils";
  * Useful for optimizing re-renders when only primitive values in options change.
  */
 export function usePrimitiveOptionsStream<T extends object>(options: T) {
-  // Create a stable stream that will live for the component's lifetime
-  const streamRef = useRef<Stream<T, never> | null>(null);
-  const emitOptionsRef = useRef<((value: T) => void) | null>(null);
-
-  // Track primitive values in options
+  const streamRef = useRef<Stream<T, Error> | null>(null);
+  const emitterRef = useRef<Emitter<T, Error> | null>(null);
+  // primitive options value that we will check for equality in order to emit changes
   const optionsPrimitivesRef = useRef(options);
+
+  const emit = useCallback((options: T) => {
+    emitterRef.current?.value(options);
+  }, []);
+  const error = useCallback((err: Error) => {
+    emitterRef.current?.error(err);
+  }, []);
+  const end = useCallback(() => {
+    emitterRef.current?.end();
+  }, []);
+
+  // Check the primitive values of the options and emit if they change
   if (!arePrimitiveValuesEqual(options, optionsPrimitivesRef.current)) {
     optionsPrimitivesRef.current = options;
+    emit(optionsPrimitivesRef.current);
   }
 
-  // Initialize the stream once
-  if (!streamRef.current) {
-    streamRef.current = Kefir.stream<T, never>((emitter) => {
-      emitOptionsRef.current = (value) => emitter.emit(value);
-      return () => {
-        emitOptionsRef.current = null;
-        streamRef.current = null;
-      };
-    });
-  }
-
-  // Emit new options when they change
   useEffect(() => {
-    emitOptionsRef.current?.(optionsPrimitivesRef.current);
-  }, [optionsPrimitivesRef.current]);
+    const cleanup = () => {
+      end();
+      emitterRef.current = null;
+      streamRef.current = null;
+    };
+
+    if (!streamRef.current) {
+      streamRef.current = Kefir.stream<T, Error>((emitter) => {
+        emitterRef.current = emitter;
+        emit(options);
+      });
+    }
+    return cleanup;
+  }, []);
 
   return {
     streamRef,
-    emitOptionsRef,
+    emitterRef,
+    emit,
+    error,
+    end,
   };
 }

@@ -41,7 +41,7 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
   const [composeButtonElement, setComposeButtonElement] =
     useState<HTMLDivElement | null>(null);
 
-  const { streamRef, emitOptionsRef } =
+  const { streamRef, emitterRef } =
     usePrimitiveOptionsStream<ComposeButtonDescriptor>(options);
 
   const handleClickRef = useRef(options.onClick);
@@ -81,7 +81,7 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
     composeButtonRef.current = composeView.addButton(buttonStream);
     // For some reason, the button needs to be fully registered before it will listen to emitted
     // values. Emitting synchronously in the stream callback will not work correctly.
-    emitOptionsRef.current?.(options);
+    emitterRef.current?.emit(options);
 
     const buttonElement = document.querySelector<HTMLDivElement>(
       `.${classHash}`
@@ -93,6 +93,7 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
     setComposeButtonElement(buttonElement);
 
     composeButtonRef.current.on("destroy", () => {
+      emitterRef.current?.end();
       composeButtonRef.current = null;
       setComposeButtonElement(null);
     });
