@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import type { ComposeNoticeView } from "@inboxsdk/core";
 
 import { useComposeView } from "./useComposeView";
-import { usePrimitiveOptionsStream } from "../utils/usePrimitiveOptionsStream";
 
 type ComposeNoticeProps = {
   children: React.ReactNode;
@@ -27,31 +26,20 @@ function ComposeNotice(props: ComposeNoticeProps) {
   );
   const { children, options = {} } = props;
 
-  const { streamRef, end } = usePrimitiveOptionsStream(options);
-
   useEffect(() => {
     if (!composeView) {
       console.error("ComposeNotice must be wrapped in a ComposeView.");
       return;
     }
 
-    if (!streamRef.current) {
-      console.error(
-        "Missing options stream. Was this component cleaned up already?"
-      );
-      return;
-    }
-
-    const notice = composeView.addComposeNotice(streamRef.current);
+    const notice = composeView.addComposeNotice(options);
     setComposeNotice(notice);
 
     notice.on("destroy", () => {
-      end();
       setComposeNotice(null);
     });
 
     return () => {
-      end();
       notice.destroy();
     };
   }, [composeView]);
