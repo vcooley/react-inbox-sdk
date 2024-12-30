@@ -41,7 +41,7 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
   const [composeButtonElement, setComposeButtonElement] =
     useState<HTMLDivElement | null>(null);
 
-  const { streamRef, emitterRef } =
+  const { streamRef, end } =
     usePrimitiveOptionsStream<ComposeButtonDescriptor>(options);
 
   const handleClickRef = useRef(options.onClick);
@@ -90,7 +90,7 @@ function ComposeButton({ options, children }: ComposeButtonProps) {
     setComposeButtonElement(buttonElement);
 
     composeButtonRef.current.on("destroy", () => {
-      emitterRef.current?.end();
+      end();
       composeButtonRef.current = null;
       setComposeButtonElement(null);
     });
