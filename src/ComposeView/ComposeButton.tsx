@@ -7,8 +7,8 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import { ComposeButtonDescriptor } from "@inboxsdk/core";
-import ComposeButtonView from "@inboxsdk/core/src/platform-implementation-js/views/compose-button-view";
+import type { ComposeButtonDescriptor } from "@inboxsdk/core";
+import type ComposeButtonView from "@inboxsdk/core/src/platform-implementation-js/views/compose-button-view";
 
 import { useComposeView } from "./useComposeView";
 import { makeHash } from "../utils/makeHash";

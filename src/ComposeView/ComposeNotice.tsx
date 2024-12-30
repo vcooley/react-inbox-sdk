@@ -1,9 +1,9 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import type { ComposeNoticeView } from "@inboxsdk/core";
 
 import { useComposeView } from "./useComposeView";
 import { usePrimitiveOptionsStream } from "../utils/usePrimitiveOptionsStream";
-import { ComposeNoticeView } from "@inboxsdk/core";
 
 type ComposeNoticeProps = {
   children: React.ReactNode;
@@ -27,7 +27,7 @@ function ComposeNotice(props: ComposeNoticeProps) {
   );
   const { children, options = {} } = props;
 
-  const { streamRef, emitterRef } = usePrimitiveOptionsStream(options);
+  const { streamRef, end } = usePrimitiveOptionsStream(options);
 
   useEffect(() => {
     if (!composeView) {
@@ -46,13 +46,13 @@ function ComposeNotice(props: ComposeNoticeProps) {
     setComposeNotice(notice);
 
     notice.on("destroy", () => {
-      emitterRef.current?.end();
+      end();
       setComposeNotice(null);
     });
 
     return () => {
+      end();
       notice.destroy();
-      emitterRef.current?.end();
     };
   }, [composeView]);
 
