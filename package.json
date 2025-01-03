@@ -9,6 +9,7 @@
   "scripts": {
     "test": "vitest",
     "prepublishOnly": "tsc",
+    "build": "tsc",
     "build:example": "tsc && cd example && pnpm build"
   },
   "keywords": [

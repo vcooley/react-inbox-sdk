@@ -16,7 +16,7 @@ import {
 } from "react-inbox-sdk/ComposeView";
 import { useState } from "react";
 
-const INBOX_SDK_APP_ID = process.env.INBOX_SDK_APP_ID ?? "";
+const INBOX_SDK_APP_ID = import.meta.env.VITE_INBOX_SDK_APP_ID ?? "";
 
 function ThreadViewContent() {
   return (
