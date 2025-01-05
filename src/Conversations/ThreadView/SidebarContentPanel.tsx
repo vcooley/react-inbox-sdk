@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { ContentPanelDescriptor, ContentPanelView } from "@inboxsdk/core";
 
@@ -65,9 +65,9 @@ function SidebarContentPanel({
 
     return () => {
       end();
-      sidebarContentPanelRef.current?.remove();
+      sidebarContentPanelRef.current?.destroy();
     };
-  }, [threadView]);
+  }, []);
 
   return (
     containerElementRef.current &&
